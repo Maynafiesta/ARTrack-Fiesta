@@ -98,12 +98,14 @@ def build_artrack_seq(cfg, training=True):
         hidden_dim,
     )
     load_from = cfg.MODEL.PRETRAIN_PTH
-    checkpoint = torch.load(load_from, map_location="cpu")
-    missing_keys, unexpected_keys = model.load_state_dict(checkpoint["net"], strict=False)
-    print('Load pretrained model from: ' + load_from)
+    if load_from:
+        checkpoint = torch.load(load_from, map_location="cpu", weights_only=False)
+        missing_keys, unexpected_keys = model.load_state_dict(checkpoint["net"], strict=False)
+        print('Load pretrained model from: ' + load_from)
+        
     if 'sequence' in cfg.MODEL.PRETRAIN_FILE and training:
         print("i change myself")
-        checkpoint = torch.load(cfg.MODEL.PRETRAIN_FILE, map_location="cpu")
+        checkpoint = torch.load(cfg.MODEL.PRETRAIN_FILE, map_location="cpu", weights_only=False)
         missing_keys, unexpected_keys = model.load_state_dict(checkpoint["net"], strict=False)
         print('Load pretrained model from: ' + cfg.MODEL.PRETRAIN_FILE)
 

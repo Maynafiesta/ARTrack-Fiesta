@@ -31,9 +31,11 @@ class BaseTracker:
         else:
             box = (box,)
         if segmentation is None:
-            self.visdom.register((image, *box), 'Tracking', 1, 'Tracking')
+            if self.visdom is not None:
+                self.visdom.register((image, *box), 'Tracking', 1, 'Tracking')
         else:
-            self.visdom.register((image, *box, segmentation), 'Tracking', 1, 'Tracking')
+            if self.visdom is not None:
+                self.visdom.register((image, *box, segmentation), 'Tracking', 1, 'Tracking')
 
     def transform_bbox_to_crop(self, box_in, resize_factor, device, box_extract=None, crop_type='template'):
         # box_in: list [x1, y1, w, h], not normalized
@@ -71,7 +73,7 @@ class BaseTracker:
                 #             'selected. During paused mode, you can track for one frame by pressing the right arrow key.' \
                 #             'To enable/disable plotting of a data block, tick/untick the corresponding entry in ' \
                 #             'block list.'
-                # self.visdom.register(help_text, 'text', 1, 'Help')
+                # if self.visdom is not None:     self.visdom.register(help_text, 'text', 1, 'Help')
             except:
                 time.sleep(0.5)
                 print('!!! WARNING: Visdom could not start, so using matplotlib visualization instead !!!\n'

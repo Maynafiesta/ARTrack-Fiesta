@@ -58,7 +58,7 @@ class ARTrackV2(BaseTracker):
     def __init__(self, params, dataset_name):
         super(ARTrackV2, self).__init__(params)
         network = build_artrackv2(params.cfg, training=False)
-        network.load_state_dict(torch.load(self.params.checkpoint, map_location='cpu')['net'], strict=True)
+        network.load_state_dict(torch.load(self.params.checkpoint, map_location='cpu', weights_only=False)['net'], strict=True)
         self.cfg = params.cfg
         self.bins = self.cfg.MODEL.BINS
         self.network = network.cuda()
@@ -155,19 +155,26 @@ class ARTrackV2(BaseTracker):
                 save_path = os.path.join(self.save_dir, "%04d.jpg" % self.frame_id)
                 cv2.imwrite(save_path, image_BGR)
             else:
-                self.visdom.register((image, info['gt_bbox'].tolist(), self.state), 'Tracking', 1, 'Tracking')
+                if self.visdom is not None:
+                    self.visdom.register((image, info['gt_bbox'].tolist(), self.state), 'Tracking', 1, 'Tracking')
 
-                self.visdom.register(torch.from_numpy(x_patch_arr).permute(2, 0, 1), 'image', 1, 'search_region')
-                self.visdom.register(torch.from_numpy(self.z_patch_arr).permute(2, 0, 1), 'image', 1, 'template')
-                self.visdom.register(pred_score_map.view(self.feat_sz, self.feat_sz), 'heatmap', 1, 'score_map')
-                self.visdom.register((pred_score_map * self.output_window).view(self.feat_sz, self.feat_sz), 'heatmap',
+                if self.visdom is not None:
+
+                    self.visdom.register(torch.from_numpy(x_patch_arr).permute(2, 0, 1), 'image', 1, 'search_region')
+                if self.visdom is not None:
+                    self.visdom.register(torch.from_numpy(self.z_patch_arr).permute(2, 0, 1), 'image', 1, 'template')
+                if self.visdom is not None:
+                    self.visdom.register(pred_score_map.view(self.feat_sz, self.feat_sz), 'heatmap', 1, 'score_map')
+                if self.visdom is not None:
+                    self.visdom.register((pred_score_map * self.output_window).view(self.feat_sz, self.feat_sz), 'heatmap',
                                      1, 'score_map_hann')
 
                 if 'removed_indexes_s' in out_dict and out_dict['removed_indexes_s']:
                     removed_indexes_s = out_dict['removed_indexes_s']
                     removed_indexes_s = [removed_indexes_s_i.cpu().numpy() for removed_indexes_s_i in removed_indexes_s]
                     masked_search = gen_visualization(x_patch_arr, removed_indexes_s)
-                    self.visdom.register(torch.from_numpy(masked_search).permute(2, 0, 1), 'image', 1, 'masked_search')
+                    if self.visdom is not None:
+                        self.visdom.register(torch.from_numpy(masked_search).permute(2, 0, 1), 'image', 1, 'masked_search')
 
                 while self.pause_mode:
                     if self.step:
