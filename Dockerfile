@@ -30,6 +30,6 @@ RUN pip3 install --no-cache-dir onnx onnxsim pycuda cuda-python
 COPY . .
 
 # Environment paths for evaluation
-RUN python3 -c "from tracking.create_default_local_file import create_default_local_file; create_default_local_file('/app', '/app/data', '/app/output')"
+RUN python3 tracking/create_default_local_file.py --workspace_dir /app --data_dir /app/data --save_dir /app/output
 
 CMD ["bash"]

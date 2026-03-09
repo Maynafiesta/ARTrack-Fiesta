@@ -15,7 +15,8 @@ from lib.train.data.processing_utils import sample_target, transform_image_to_cr
 
 class TRTTracker:
     def __init__(self, model_name):
-        base_name = model_name.replace("_fp32", "")
+        # Strip both possible suffixes
+        base_name = model_name.replace("_fp32", "").replace("_fp16", "")
         self.params = parameters(base_name)
         self.cfg = self.params.cfg
         self.bins = self.cfg.MODEL.BINS
