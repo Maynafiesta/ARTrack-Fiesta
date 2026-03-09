@@ -38,20 +38,34 @@ docker exec -it artrack_jetson bash
 ```
 
 ### 3. TensorRT Engine Oluşturma
-Jetson mimarisine özel engine dosyalarının oluşturulması için aşağıdaki komutlar sırasıyla çalıştırılmalıdır. Hassasiyet kaybını önlemek için FP32 kullanılmaktadır.
+Hassasiyet seçimine göre aşağıdaki komutları kullanabilirsiniz. FP32 en kararlı sonucu verirken, FP16 daha yüksek performans sunar.
 
-**256 Full Model:**
+**256 Full Model (FP32 - Önerilen):**
 ```bash
 /usr/src/tensorrt/bin/trtexec --onnx=Weights/ONNX/artrack_seq_256_full_sim.onnx \
-    --saveEngine=Weights/TensorRT/artrack_seq_256_full_sim.engine \
+    --saveEngine=Weights/TensorRT/artrack_seq_256_full_fp32.engine \
     --workspace=4096
 ```
 
-**384 Large Model:**
+**256 Full Model (FP16):**
+```bash
+/usr/src/tensorrt/bin/trtexec --onnx=Weights/ONNX/artrack_seq_256_full_sim.onnx \
+    --saveEngine=Weights/TensorRT/artrack_seq_256_full_fp16.engine \
+    --fp16 --workspace=4096
+```
+
+**384 Large Model (FP32 - Önerilen):**
 ```bash
 /usr/src/tensorrt/bin/trtexec --onnx=Weights/ONNX/artrack_seq_large_384_full_sim.onnx \
-    --saveEngine=Weights/TensorRT/artrack_seq_large_384_full_sim.engine \
+    --saveEngine=Weights/TensorRT/artrack_seq_large_384_full_fp32.engine \
     --workspace=4096
+```
+
+**384 Large Model (FP16):**
+```bash
+/usr/src/tensorrt/bin/trtexec --onnx=Weights/ONNX/artrack_seq_large_384_full_sim.onnx \
+    --saveEngine=Weights/TensorRT/artrack_seq_large_384_full_fp16.engine \
+    --fp16 --workspace=4096
 ```
 
 ### 4. Uygulamanın Çalıştırılması

@@ -113,7 +113,12 @@ def main():
     parser.add_argument('videofile', type=str, help='Path to a video file.')
     args = parser.parse_args()
     
-    models = ['artrack_seq_large_384_full_fp32', 'artrack_seq_256_full_fp32']
+    models = [
+        'artrack_seq_large_384_full_fp32', 
+        'artrack_seq_large_384_full_fp16',
+        'artrack_seq_256_full_fp32',
+        'artrack_seq_256_full_fp16'
+    ]
     print("\n" + "="*50)
     print("TensorRT Engines (Available Models):")
     for i, model in enumerate(models, 1):
