@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  artrack_jetson:
+    image: nvcr.io/nvidia/l4t-tensorrt:r35.3.1-py3
+    container_name: artrack_jetson
+    runtime: nvidia
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - .:/app
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    working_dir: /app
+    network_mode: host
+    stdin_open: true
+    tty: true
