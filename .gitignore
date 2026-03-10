@@ -1,3 +1,4 @@
 videos/
 Weights/
 output/
+__pycache__/
